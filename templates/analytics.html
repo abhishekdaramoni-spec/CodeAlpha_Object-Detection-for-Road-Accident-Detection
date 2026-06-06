@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Analytics - RADAR AI</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom Premium Styles -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>RADAR AI</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="{{ url_for('dashboard') }}">
+                        <i class="fa-solid fa-gauge"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('incidents_page') }}">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Incidents</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="{{ url_for('analytics_page') }}">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('settings_page') }}">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/dashboard?open=reports">
+                        <i class="fa-solid fa-file-contract"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/dashboard?open=about">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>About</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <p>System Version 1.0.0</p>
+                <p>&copy; 2026 RADAR AI</p>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Traffic System Analytics</h1>
+                    <p>Aggregated visual graphs mapping traffic density and collision counts</p>
+                </div>
+            </div>
+
+            <!-- Charts Layout Grid -->
+            <div class="analytics-grid">
+                <!-- 1. Hourly Traffic Volume -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Hourly Traffic density (Past 24 Hours)
+                        </div>
+                    </div>
+                    <div style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="trafficHourChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 2. Vehicle Distribution -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i class="fa-solid fa-truck-field"></i> Vehicle Type Distribution
+                        </div>
+                    </div>
+                    <div style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="vehicleClassChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 3. Risk Level Split -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Incidents by Severity Risk Level
+                        </div>
+                    </div>
+                    <div style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="riskSplitChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 4. Incident Trend -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i class="fa-solid fa-calendar-days"></i> Accident Frequencies Trend
+                        </div>
+                    </div>
+                    <div style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="incidentTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bootstrap and Chart.js CDNs -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Page Script -->
+    <script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+</body>
+</html>

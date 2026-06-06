@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road Accident Detection & Emergency Alert System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom Premium Styles -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>RADAR AI</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item active">
+                    <a href="{{ url_for('dashboard') }}">
+                        <i class="fa-solid fa-gauge"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('incidents_page') }}">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Incidents</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('analytics_page') }}">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('settings_page') }}">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" id="menu-reports">
+                        <i class="fa-solid fa-file-contract"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" id="menu-about">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>About</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <p>System Version 1.0.0</p>
+                <p>&copy; 2026 RADAR AI</p>
+            </div>
+        </nav>
+
+        <!-- Main Content Panel -->
+        <main class="main-content">
+            <div class="page-header premium-header">
+                <div class="page-title">
+                    <h1>RADAR AI</h1>
+                    <p class="subtitle">Road Accident Detection & Emergency Alert System</p>
+                </div>
+                <div class="header-status-container" id="header-status">
+                    <span class="status-dot green"></span>
+                    <span class="status-text">SYSTEM STATUS: ACTIVE / SECURE</span>
+                </div>
+                <div class="header-time-date">
+                    <div id="cyber-date">June 06, 2026</div>
+                    <div id="cyber-time">17:59:41</div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary btn-cyber" onclick="toggleSourcePanel()">
+                        <i class="fa-solid fa-video"></i> CHANGE SOURCE
+                    </button>
+                </div>
+            </div>
+
+            <!-- Metrics Row -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-info">
+                        <h3>Total Vehicles</h3>
+                        <div id="stat-vehicles" class="metric-val">0</div>
+                    </div>
+                    <i class="fa-solid fa-car metric-icon"></i>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-info">
+                        <h3>Pedestrians Detected</h3>
+                        <div id="stat-people" class="metric-val">0</div>
+                    </div>
+                    <i class="fa-solid fa-person-walking metric-icon"></i>
+                </div>
+                <div class="metric-card low">
+                    <div class="metric-info">
+                        <h3>Active Tracks</h3>
+                        <div id="stat-active" class="metric-val">0</div>
+                    </div>
+                    <i class="fa-solid fa-arrows-spin metric-icon"></i>
+                </div>
+                <div class="metric-card mod">
+                    <div class="metric-info">
+                        <h3>Suspected Accidents</h3>
+                        <div id="stat-incidents" class="metric-val">0</div>
+                    </div>
+                    <i class="fa-solid fa-circle-exclamation metric-icon"></i>
+                </div>
+                <div class="metric-card high">
+                    <div class="metric-info">
+                        <h3>Active Alerts</h3>
+                        <div id="stat-alerts" class="metric-val">0</div>
+                    </div>
+                    <i class="fa-solid fa-bell-exclamation metric-icon"></i>
+                </div>
+            </div>
+
+            <!-- Source Selector Collapse Panel -->
+            <div id="source-panel" class="panel d-none">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i class="fa-solid fa-sliders"></i> Select Traffic Feed Source
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="card bg-dark border-secondary p-3 h-100">
+                            <h5>Webcam Stream</h5>
+                            <p class="text-muted small">Process input from the host computer's default webcam in real time.</p>
+                            <a href="{{ url_for('set_source_webcam') }}" class="btn btn-primary mt-auto">
+                                <i class="fa-solid fa-camera"></i> Connect Default Webcam
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-dark border-secondary p-3 h-100">
+                            <h5>Upload Video File</h5>
+                            <p class="text-muted small">Upload pre-recorded traffic camera MP4/AVI footage for frame analysis.</p>
+                            <form action="{{ url_for('upload_video') }}" method="POST" enctype="multipart/form-data" class="mt-auto">
+                                <div class="mb-2">
+                                    <input class="form-control" type="file" name="video_file" accept="video/*" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fa-solid fa-upload"></i> Upload & Process
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Work Grid -->
+            <div class="dashboard-grid">
+                <!-- Video stream feed -->
+                <div class="panel video-feed-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i class="fa-solid fa-circle-dot text-danger"></i> Live Feed: <span id="current-source-label">{{ current_source_name }}</span>
+                        </div>
+                        <div class="feed-controls">
+                            <a href="{{ url_for('stop_feed') }}" class="btn btn-outline-danger btn-sm">
+                                <i class="fa-solid fa-stop"></i> Stop Stream
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="video-container">
+                        <!-- Real-time Alert Overlay (Hidden by default, shown by JS) -->
+                        <div id="danger-alert-overlay" class="alert-overlay d-none">
+                            <div class="alert-overlay-icon">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <div class="alert-overlay-content">
+                                <h4 id="alert-title">🚨 Possible Road Accident Detected</h4>
+                                <p id="alert-desc">Location: Camera Feed | Processing live frames...</p>
+                            </div>
+                        </div>
+
+                        <!-- High-Tech Camera HUD overlays -->
+                        <div class="hud-top-left">
+                            <span class="hud-item"><span class="hud-label">CAM:</span> <span id="hud-cam-name">{{ 'CAM_001' if current_source_name != 'Disconnected' else 'STANDBY' }}</span></span>
+                            <span class="hud-item"><span class="hud-label">RES:</span> 640×360</span>
+                        </div>
+                        <div class="hud-top-right">
+                            <span class="hud-item"><span class="hud-label">FPS:</span> <span id="hud-fps">0.0</span></span>
+                            <span class="hud-item"><span class="hud-label">OBJS:</span> <span id="hud-objects">0</span></span>
+                        </div>
+                        <div class="hud-bottom-left">
+                            <span class="hud-rec-dot animate-pulse"></span> <span class="hud-rec-text">ANALYZING</span>
+                        </div>
+                        
+                        <!-- Video Tag/Image Feed -->
+                        {% if streaming_active %}
+                            <img id="video-element" src="{{ url_for('video_feed') }}" class="video-feed" alt="Live Processing Stream">
+                        {% else %}
+                            <div class="video-placeholder">
+                                <i class="fa-solid fa-video-slash"></i>
+                                <h4>No Video Stream Active</h4>
+                                <p>Please configure a camera source or upload a video file to begin automated collision detection monitoring.</p>
+                                <button class="btn btn-primary" onclick="toggleSourcePanel()">
+                                    <i class="fa-solid fa-plus"></i> Select Stream Source
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Bottom HUD Control Desk -->
+                    <div class="hud-control-desk">
+                        <div class="hud-col recent-alert-panel">
+                            <div class="hud-col-title"><i class="fa-solid fa-bell"></i> RECENT ALERT</div>
+                            <div class="hud-col-body" id="hud-recent-alert">
+                                <div class="hud-alert-empty">NO RECENT ALERTS REGISTERED</div>
+                            </div>
+                        </div>
+                        <div class="hud-col buzzer-panel">
+                            <div class="hud-col-title"><i class="fa-solid fa-volume-high"></i> ALARM BUZZER</div>
+                            <div class="hud-col-body buzzer-controls">
+                                <button id="buzzer-toggle-btn" class="btn btn-buzzer unmuted">
+                                    <i class="fa-solid fa-volume-high" id="buzzer-icon"></i>
+                                    <span id="buzzer-status-text">BUZZER ACTIVE</span>
+                                </button>
+                                <div class="sound-wave-container" id="sound-waves">
+                                    <span class="wave-bar bar-1"></span>
+                                    <span class="wave-bar bar-2"></span>
+                                    <span class="wave-bar bar-3"></span>
+                                    <span class="wave-bar bar-4"></span>
+                                    <span class="wave-bar bar-5"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hud-col status-panel">
+                            <div class="hud-col-title"><i class="fa-solid fa-server"></i> SYSTEM INTEGRITY</div>
+                            <div class="hud-col-body status-indicators">
+                                <div class="status-indicator-item">
+                                    <span class="indicator-dot {{ 'green' if streaming_active else 'red' }}" id="ind-camera"></span>
+                                    <span class="indicator-label">CAMERA FEED</span>
+                                </div>
+                                <div class="status-indicator-item">
+                                    <span class="indicator-dot {{ 'green' if streaming_active else 'red' }}" id="ind-model"></span>
+                                    <span class="indicator-label">YOLOv8 DETECTOR</span>
+                                </div>
+                                <div class="status-indicator-item">
+                                    <span class="indicator-dot green" id="ind-db"></span>
+                                    <span class="indicator-label">SQLITE DATABASE</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emergency Alert & Activity Log panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i class="fa-solid fa-bell"></i> Live Alerts Log
+                        </div>
+                    </div>
+                    
+                    <div id="alert-log-container" class="alert-log-list">
+                        <!-- Polled items get injected here -->
+                        <div class="text-center text-muted py-5">
+                            <i class="fa-solid fa-circle-check text-success fs-3 mb-2 d-block"></i>
+                            No alerts available
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Reports Overlay Modal -->
+    <div id="modal-reports" class="cyber-modal d-none">
+        <div class="cyber-modal-content">
+            <div class="cyber-modal-header">
+                <h2><i class="fa-solid fa-file-contract"></i> SYSTEM REPORTS</h2>
+                <button class="cyber-modal-close" onclick="closeModal('modal-reports')">&times;</button>
+            </div>
+            <div class="cyber-modal-body">
+                <p class="text-muted">Generate PDF incident records for auditing and emergency dispatch reports.</p>
+                <div class="reports-action-box">
+                    <a href="{{ url_for('incidents_page') }}" class="btn btn-primary w-100">
+                        <i class="fa-solid fa-circle-right"></i> View Incident Database to Export Reports
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- About Overlay Modal -->
+    <div id="modal-about" class="cyber-modal d-none">
+        <div class="cyber-modal-content">
+            <div class="cyber-modal-header">
+                <h2><i class="fa-solid fa-circle-info"></i> ABOUT RADAR AI</h2>
+                <button class="cyber-modal-close" onclick="closeModal('modal-about')">&times;</button>
+            </div>
+            <div class="cyber-modal-body">
+                <h4 class="text-cyan">Road Accident Detection & Emergency Alert System</h4>
+                <p>Version 1.0.0 (Production Core)</p>
+                <hr class="border-secondary mb-3">
+                <p>RADAR AI utilizes advanced computer vision and kinematic tracking algorithms to identify collisions, vehicle rollovers, sudden stops, and pedestrian collapses on road surfaces in real-time.</p>
+                <p class="text-muted small">Powered by YOLOv8, Custom Overlap Tracking, and SQLite Database Core.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & Chart.js JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom Dashboard Polling & UI JS -->
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

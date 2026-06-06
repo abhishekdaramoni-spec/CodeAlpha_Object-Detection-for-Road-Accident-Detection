@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Settings - RADAR AI</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom Premium Styles -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>RADAR AI</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="{{ url_for('dashboard') }}">
+                        <i class="fa-solid fa-gauge"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('incidents_page') }}">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Incidents</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('analytics_page') }}">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="{{ url_for('settings_page') }}">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/dashboard?open=reports">
+                        <i class="fa-solid fa-file-contract"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/dashboard?open=about">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>About</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <p>System Version 1.0.0</p>
+                <p>&copy; 2026 RADAR AI</p>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Configuration Settings</h1>
+                    <p>Adjust neural network sensitivities and accident detection thresholds</p>
+                </div>
+            </div>
+
+            <!-- Settings Settings Form -->
+            <form id="settings-form" class="row g-4" onsubmit="saveSettings(event)">
+                <!-- AI Model Settings Panel -->
+                <div class="col-md-6">
+                    <div class="panel h-100">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <i class="fa-solid fa-brain"></i> Object Detection & Tracking
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="conf-threshold">
+                                YOLOv8 confidence Threshold
+                                <span id="conf-val" class="range-val">0.25</span>
+                            </label>
+                            <input type="range" class="form-range" id="conf-threshold" min="0.10" max="0.90" step="0.05" oninput="updateValLabel('conf', this.value)">
+                            <small class="text-muted d-block mt-1">Lower values improve recall (more detections) but increase false positives.</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cosine-distance">
+                                Deep SORT Max Cosine Distance
+                                <span id="cosine-val" class="range-val">0.3</span>
+                            </label>
+                            <input type="range" class="form-range" id="cosine-distance" min="0.1" max="0.8" step="0.05" oninput="updateValLabel('cosine', this.value)">
+                            <small class="text-muted d-block mt-1">Maximum appearance similarity threshold for matching tracking IDs.</small>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="yolo-imgsz">
+                                YOLO Processing Resolution
+                            </label>
+                            <select class="form-select bg-dark text-light border-secondary" id="yolo-imgsz">
+                                <option value="320">Fast (320px) - Recommended for standard CPUs</option>
+                                <option value="480">Balanced (480px)</option>
+                                <option value="640">High Quality (640px) - CPU Heavy</option>
+                            </select>
+                            <small class="text-muted d-block mt-1">Smaller resolutions drastically increase processing speeds on CPUs.</small>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="inference-interval">
+                                YOLO Inference Interval
+                                <span id="interval-val" class="range-val">2 frames</span>
+                            </label>
+                            <input type="range" class="form-range" id="inference-interval" min="1" max="5" step="1" oninput="updateValLabel('interval', this.value + ' frames')">
+                            <small class="text-muted d-block mt-1">Run YOLOv8 once every N frames. Skipped frames use velocity estimation to track smoothly, saving CPU power.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kinematic Thresholds Panel -->
+                <div class="col-md-6">
+                    <div class="panel h-100">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <i class="fa-solid fa-gauge-high"></i> Kinematic Alarm Thresholds
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="decel-threshold">
+                                Sudden stop deceleration threshold
+                                <span id="decel-val" class="range-val">150 px/s²</span>
+                            </label>
+                            <input type="range" class="form-range" id="decel-threshold" min="50" max="400" step="10" oninput="updateValLabel('decel', this.value + ' px/s²')">
+                            <small class="text-muted d-block mt-1">Required deceleration rate to flag a vehicle making an abrupt, emergency stop.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="trajectory-threshold">
+                                Trajectory Angle Change Threshold
+                                <span id="traj-val" class="range-val">40°</span>
+                            </label>
+                            <input type="range" class="form-range" id="trajectory-threshold" min="10" max="90" step="5" oninput="updateValLabel('traj', this.value + '°')">
+                            <small class="text-muted d-block mt-1">Abrupt angle deviation magnitude defining a sudden vehicle swerve.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Collision and Pedestrian Logic Panel -->
+                <div class="col-md-6">
+                    <div class="panel h-100">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <i class="fa-solid fa-car-burst"></i> Collision & Fall Sensitivity
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="proximity-threshold">
+                                Bounding Box Proximity Limit
+                                <span id="proximity-val" class="range-val">45 px</span>
+                            </label>
+                            <input type="range" class="form-range" id="proximity-threshold" min="20" max="150" step="5" oninput="updateValLabel('proximity', this.value + ' px')">
+                            <small class="text-muted d-block mt-1">Maximum pixel distance between object centroids to trigger overlap collision checks.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="posture-threshold">
+                                Fallen aspect ratio (Width/Height)
+                                <span id="posture-val" class="range-val">1.2</span>
+                            </label>
+                            <input type="range" class="form-range" id="posture-threshold" min="0.8" max="2.2" step="0.1" oninput="updateValLabel('posture', this.value)">
+                            <small class="text-muted d-block mt-1">Aspect ratio of a bounding box above which a person is flagged as horizontal/fallen.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="motionless-threshold">
+                                Motionless victim Duration Limit
+                                <span id="motionless-val" class="range-val">3.0s</span>
+                            </label>
+                            <input type="range" class="form-range" id="motionless-threshold" min="1.0" max="15.0" step="0.5" oninput="updateValLabel('motionless', this.value + 's')">
+                            <small class="text-muted d-block mt-1">Time a fallen person must remain stationary to elevate status to HIGH RISK.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Notifications Panel -->
+                <div class="col-md-6">
+                    <div class="panel h-100 d-flex flex-column">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <i class="fa-solid fa-volume-high"></i> System Alerts & Notifications
+                            </div>
+                        </div>
+                        
+                        <div class="form-group form-check mt-2">
+                            <input type="checkbox" class="form-check-input" id="audio-alerts" checked style="accent-color: var(--primary-cyan)">
+                            <label class="form-check-label text-light fs-6 ms-2" for="audio-alerts">Enable Audible Alarm Buzzer</label>
+                            <small class="text-muted d-block mt-1">Play an audible warning siren instantly when a Moderate or High Risk incident occurs.</small>
+                        </div>
+
+                        <div class="form-group form-check mt-3">
+                            <input type="checkbox" class="form-check-input" id="auto-reports" checked style="accent-color: var(--primary-cyan)">
+                            <label class="form-check-label text-light fs-6 ms-2" for="auto-reports">Auto-Acknowledge Low Risk Incidents</label>
+                            <small class="text-muted d-block mt-1">Register Low Risk (e.g. abrupt stop) events in the DB but skip popping active screen warnings.</small>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="mt-auto d-flex justify-content-end gap-3 pt-4 border-top border-secondary">
+                            <button type="button" class="btn btn-secondary" onclick="fetchSettings()">
+                                <i class="fa-solid fa-arrow-rotate-left"></i> Discard
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Bootstrap JS bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom Settings Script -->
+    <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+</body>
+</html>
