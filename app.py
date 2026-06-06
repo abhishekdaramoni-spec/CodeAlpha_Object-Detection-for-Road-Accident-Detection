@@ -394,12 +394,20 @@ def settings_page():
 @app.route('/video_feed')
 def video_feed():
     if IS_RENDER:
-        return "Live video detection is disabled on Render."
+        return """
+        <html>
+        <body style="background:#111;color:white;text-align:center;padding-top:100px;font-family:Arial">
+        <h2>Live Video Detection Disabled on Render</h2>
+        <p>Dashboard, analytics and reports are available.</p>
+        <p>Run locally for webcam and accident detection.</p>
+        </body>
+        </html>
+        """
 
     return Response(
         generate_frames(),
-        mimetype='multipart/x
-
+        mimetype='multipart/x-mixed-replace; boundary=frame'
+    )
 @app.route('/set_source_webcam')
 def set_source_webcam():
     """Switches input stream source to local webcam."""
