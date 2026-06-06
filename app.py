@@ -19,7 +19,7 @@ from detector.yolo_detector import YoloDetector
 from detector.tracker import ObjectTracker
 from detector.accident_logic import AccidentDetector
 from reports.pdf_generator import generate_incident_pdf
-
+IS_RENDER = os.environ.get("RENDER") == "true"
 app = Flask(__name__)
 
 # System Configurations
@@ -391,11 +391,14 @@ def analytics_page():
 @app.route('/settings')
 def settings_page():
     return render_template('settings.html')
-
 @app.route('/video_feed')
 def video_feed():
-    """Route serving multipart camera frame streams."""
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    if IS_RENDER:
+        return "Live video detection is disabled on Render."
+
+    return Response(
+        generate_frames(),
+        mimetype='multipart/x
 
 @app.route('/set_source_webcam')
 def set_source_webcam():
