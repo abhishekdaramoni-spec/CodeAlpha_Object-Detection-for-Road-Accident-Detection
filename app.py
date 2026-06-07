@@ -407,6 +407,9 @@ def video_feed():
     return Response(
         generate_frames(),
         mimetype='multipart/x-mixed-replace; boundary=frame'
+    )
+
+
 @app.route('/set_source_webcam')
 def set_source_webcam():
 
@@ -425,44 +428,41 @@ def set_source_webcam():
 @app.route('/upload_video', methods=['POST'])
 def upload_video():
 
+    if IS_RENDER:
+        return redirect(url_for('dashboard'))
 
-if IS_RENDER:
+    global target_source
+
+    if 'video_file' not in request.files:
+        return redirect(url_for('dashboard'))
+
+    file = request.files['video_file']
+
+    if file.filename == '':
+        return redirect(url_for('dashboard'))
+
+    filename = secure_filename(file.filename)
+
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+    file.save(filepath)
+
+    target_source = filepath
+
+    time.sleep(0.5)
+
     return redirect(url_for('dashboard'))
-
-global target_source
-
-if 'video_file' not in request.files:
-    return redirect(url_for('dashboard'))
-
-file = request.files['video_file']
-
-if file.filename == '':
-    return redirect(url_for('dashboard'))
-
-filename = secure_filename(file.filename)
-
-filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-
-file.save(filepath)
-
-target_source = filepath
-
-time.sleep(0.5)
-
-return redirect(url_for('dashboard'))
 
 
 @app.route('/stop_feed')
 def stop_feed():
 
+    global target_source, streaming_active
 
-global target_source, streaming_active
+    target_source = None
+    streaming_active = False
 
-target_source = None
-streaming_active = False
-
-return redirect(url_for('dashboard'))
-
+    return redirect(url_for('dashboard'))
 
 # --- API Endpoints ---
 
