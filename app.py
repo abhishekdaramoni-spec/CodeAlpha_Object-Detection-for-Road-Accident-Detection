@@ -410,34 +410,62 @@ def video_feed():
     )
 @app.route('/set_source_webcam')
 def set_source_webcam():
-    """Switches input stream source to local webcam."""
+
+    if IS_RENDER:
+        return redirect(url_for('dashboard'))
+
     global target_source
+
     target_source = 0
-    # Wait short delay for existing loop to cycle out
+
     time.sleep(0.5)
+
     return redirect(url_for('dashboard'))
+    @app.route('/set_source_webcam')
+def set_source_webcam():
+
+```
+if IS_RENDER:
+    return redirect(url_for('dashboard'))
+
+global target_source
+
+target_source = 0
+
+time.sleep(0.5)
+
+return redirect(url_for('dashboard'))
+```
 
 @app.route('/upload_video', methods=['POST'])
 def upload_video():
-    """Saves uploaded video file and initiates stream thread."""
-    global target_source
-    if 'video_file' not in request.files:
-        return redirect(url_for('dashboard'))
-        
-    file = request.files['video_file']
-    if file.filename == '':
-        return redirect(url_for('dashboard'))
-        
-    if file:
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
-        
-        target_source = filepath
-        # Delay to allow streaming generators to switch safely
-        time.sleep(0.5)
-        
+
+```
+if IS_RENDER:
     return redirect(url_for('dashboard'))
+
+global target_source
+
+if 'video_file' not in request.files:
+    return redirect(url_for('dashboard'))
+
+file = request.files['video_file']
+
+if file.filename == '':
+    return redirect(url_for('dashboard'))
+
+filename = secure_filename(file.filename)
+
+filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+file.save(filepath)
+
+target_source = filepath
+
+time.sleep(0.5)
+
+return redirect(url_for('dashboard'))
+
 
 @app.route('/stop_feed')
 def stop_feed():
