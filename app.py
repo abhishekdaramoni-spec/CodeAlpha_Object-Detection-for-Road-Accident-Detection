@@ -411,7 +411,7 @@ def video_feed():
 @app.route('/set_source_webcam')
 def set_source_webcam():
 
-
+```
 if IS_RENDER:
     return redirect(url_for('dashboard'))
 
@@ -426,7 +426,6 @@ return redirect(url_for('dashboard'))
 
 @app.route('/upload_video', methods=['POST'])
 def upload_video():
-
 
 if IS_RENDER:
     return redirect(url_for('dashboard'))
@@ -456,11 +455,12 @@ return redirect(url_for('dashboard'))
 
 @app.route('/stop_feed')
 def stop_feed():
-    """Stops the active video capture."""
-    global target_source, streaming_active
-    target_source = None
-    streaming_active = False
-    return redirect(url_for('dashboard'))
+global target_source, streaming_active
+
+target_source = None
+streaming_active = False
+
+return redirect(url_for('dashboard'))
 
 # --- API Endpoints ---
 
