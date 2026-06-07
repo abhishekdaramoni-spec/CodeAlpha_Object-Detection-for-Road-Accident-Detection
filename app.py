@@ -407,21 +407,19 @@ def video_feed():
     return Response(
         generate_frames(),
         mimetype='multipart/x-mixed-replace; boundary=frame'
-    )
 @app.route('/set_source_webcam')
 def set_source_webcam():
 
+    if IS_RENDER:
+        return redirect(url_for('dashboard'))
 
-if IS_RENDER:
+    global target_source
+
+    target_source = 0
+
+    time.sleep(0.5)
+
     return redirect(url_for('dashboard'))
-
-global target_source
-
-target_source = 0
-
-time.sleep(0.5)
-
-return redirect(url_for('dashboard'))
 
 
 @app.route('/upload_video', methods=['POST'])
