@@ -411,19 +411,6 @@ def video_feed():
 @app.route('/set_source_webcam')
 def set_source_webcam():
 
-    if IS_RENDER:
-        return redirect(url_for('dashboard'))
-
-    global target_source
-
-    target_source = 0
-
-    time.sleep(0.5)
-
-    return redirect(url_for('dashboard'))
-    @app.route('/set_source_webcam')
-def set_source_webcam():
-
 ```
 if IS_RENDER:
     return redirect(url_for('dashboard'))
@@ -465,7 +452,7 @@ target_source = filepath
 time.sleep(0.5)
 
 return redirect(url_for('dashboard'))
-
+```
 
 @app.route('/stop_feed')
 def stop_feed():
