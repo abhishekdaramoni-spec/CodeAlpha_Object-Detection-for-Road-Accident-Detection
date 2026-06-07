@@ -199,21 +199,26 @@
                         <div class="hud-bottom-left">
                             <span class="hud-rec-dot animate-pulse"></span> <span class="hud-rec-text">ANALYZING</span>
                         </div>
-                        
-                        <!-- Video Tag/Image Feed -->
-                        {% if streaming_active %}
-                            <img id="video-element" src="{{ url_for('video_feed') }}" class="video-feed" alt="Live Processing Stream">
-                        {% else %}
-                            <div class="video-placeholder">
-                                <i class="fa-solid fa-video-slash"></i>
-                                <h4>No Video Stream Active</h4>
-                                <p>Please configure a camera source or upload a video file to begin automated collision detection monitoring.</p>
-                                <button class="btn btn-primary" onclick="toggleSourcePanel()">
-                                    <i class="fa-solid fa-plus"></i> Select Stream Source
-                                </button>
-                            </div>
-                        {% endif %}
-                    </div>
+<div class="video-placeholder">
+    <i class="fa-solid fa-cloud"></i>
+    <h4>☁️ Cloud Mode</h4>
+    <p>
+        Live Accident Detection is disabled on Render.
+    </p>
+
+    <div style="margin-top:20px">
+        <p>✅ Dashboard Available</p>
+        <p>✅ Analytics Available</p>
+        <p>✅ Reports Available</p>
+        <p>✅ Incident History Available</p>
+        <hr>
+        <p>Run locally to use:</p>
+        <p>📹 Webcam Detection</p>
+        <p>📂 Video Upload</p>
+        <p>🚗 YOLOv8 Accident Detection</p>
+        <p>🔍 DeepSORT Tracking</p>
+    </div>
+</div>
 
                     <!-- Bottom HUD Control Desk -->
                     <div class="hud-control-desk">
